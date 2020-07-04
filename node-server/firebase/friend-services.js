@@ -9,11 +9,46 @@ var userFriendsRequests=(io)=>
 {
     io.on('connection',(socket)=>{
         console.log(`Client ${socket.id} has connected to friend services!` );
+        approveORDeclineFriendRequest(socket,io);
         sendOrDeleteFriendRequest(socket,io);
         detectDisconnection(socket,io);
         
     });
 };
+
+function approveORDeclineFriendRequest(socket,io)
+{
+    socket.on('friendRequestResponse',(data)=>
+    {
+        var db=admin.database();
+        var friendRequestRef=db.ref('friendRequestsSent').child(encodeEmail(data.friendEmail))
+        .child(encodeEmail(data.userEmail));   
+        friendRequestRef.remove();
+
+
+        if(data.requestCode==0)
+        {
+            var db=admin.database();
+            var ref=db.ref('users');
+            var userRef=ref.child(encodeEmail(data.userEmail));
+            var userFriendsRef=db.ref('userFriends');
+            var friendFriendRef=userFriendsRef.child(encodeEmail(data.friendEmail))
+            .child(encodeEmail(data.userEmail));
+
+            userRef.once('value',(snapshot)=>
+            {
+                friendFriendRef.set({
+                   // snapshot 
+                   email:snapshot.val().email,
+                   username:snapshot.val().username,
+                   userPicture:snapshot.val().userPicture,
+                   dateJoined:snapshot.val().dateJoined,
+                   hasLoggedIn:snapshot.val().hasLoggedIn          
+                 });
+            });   
+        }
+    });
+}
 
 function sendOrDeleteFriendRequest(socket,io){
     socket.on('friendRequest',(data)=>

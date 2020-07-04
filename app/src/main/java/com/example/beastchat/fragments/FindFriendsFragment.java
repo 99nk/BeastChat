@@ -60,11 +60,11 @@ public class FindFriendsFragment extends BaseFragment implements FindFriendsAdap
     private Unbinder mUnbinder;
 
     private ValueEventListener mGetAllUsersListeners;
-    private DatabaseReference mGetAllUsersReference, mGetAllFriendRequestsSentReference,mGetAllFriendRequestsReceivedReference;
+    private DatabaseReference mGetAllUsersReference, mGetAllCurrentUsersFriendsRef,mGetAllFriendRequestsSentReference,mGetAllFriendRequestsReceivedReference;
     private String mUserEmailString;
     private List<User> mAllUsers;
     private FindFriendsAdapter mAdapter;
-    private ValueEventListener mGetAllFriendRequestsSentListener,mGetAllFriendRequestsReceivedListener;
+    private ValueEventListener mGetAllFriendRequestsSentListener,mGetAllCurrentUsersFriendsListener,mGetAllFriendRequestsReceivedListener;
     private LiveFriendsServices mLiveFriendsServices;
 
     public HashMap<String,User> mFriendRequestsSentMap;
@@ -122,6 +122,13 @@ public class FindFriendsFragment extends BaseFragment implements FindFriendsAdap
                 .child(Constants.encodeEmail(mUserEmailString));
         mGetAllFriendRequestsSentReference.addValueEventListener(mGetAllFriendRequestsSentListener);
         mGetAllFriendRequestsReceivedReference.addValueEventListener(mGetAllFriendRequestsReceivedListener);
+
+
+        mGetAllCurrentUsersFriendsListener=mLiveFriendsServices.getAllCurrentUsersFriendMap(mAdapter);
+        mGetAllCurrentUsersFriendsRef=FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_PATH_USER_FRIENDS)
+                .child(Constants.encodeEmail(mUserEmailString));
+        mGetAllCurrentUsersFriendsRef.addValueEventListener(mGetAllCurrentUsersFriendsListener);
+
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);
         mCompositeSubscription.add(createSearchBarSubscription());
@@ -241,6 +248,10 @@ public class FindFriendsFragment extends BaseFragment implements FindFriendsAdap
         if(mGetAllFriendRequestsReceivedListener!=null)
         {
             mGetAllFriendRequestsReceivedReference.removeEventListener(mGetAllFriendRequestsReceivedListener);
+        }
+        if(mGetAllCurrentUsersFriendsListener!=null)
+        {
+            mGetAllCurrentUsersFriendsRef.removeEventListener(mGetAllCurrentUsersFriendsListener);
         }
     }
 

@@ -17,7 +17,7 @@ public class Constants
     public static final String FIREBASE_PATH_USERS= "users";
     public static final String FIREBASE_PATH_FRIEND_REQUEST_SENT="friendRequestsSent";
     public static final String FIREBASE_PATH_FRIEND_REQUEST_RECEIVED="friendRequestRecieved";
-
+    public static final String FIREBASE_PATH_USER_FRIENDS="userFriends";
     public static String encodeEmail(String email)
     {
         return email.replace(".",",");

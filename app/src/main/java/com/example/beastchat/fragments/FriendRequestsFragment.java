@@ -1,10 +1,12 @@
 package com.example.beastchat.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,9 +23,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.net.URISyntaxException;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.socket.client.IO;
+import io.socket.client.Socket;
 
 public class FriendRequestsFragment extends  BaseFragment implements FriendRequestsAdapter.onOptionListener {
 
@@ -38,6 +44,7 @@ public class FriendRequestsFragment extends  BaseFragment implements FriendReque
 
     private Unbinder mUnbinder;
     private String mUserEmailString;
+    private Socket mSocket;
 
 
     public static FriendRequestsFragment newInstance()
@@ -48,6 +55,15 @@ public class FriendRequestsFragment extends  BaseFragment implements FriendReque
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try {
+            mSocket= IO.socket(Constants.IP_LOCAL_HOST);
+        }
+        catch (URISyntaxException e)
+        {
+            Log.i(LoginFragment.class.getSimpleName(),e.getMessage());
+            Toast.makeText(getActivity(), "Can't connect to the server", Toast.LENGTH_SHORT).show();
+        }
+        mSocket.connect();
         mLiveFriendsServices=LiveFriendsServices.getInstance();
         mUserEmailString=mSharedPreferences.getString(Constants.USER_EMAIL,"");
     }
@@ -77,7 +93,32 @@ public class FriendRequestsFragment extends  BaseFragment implements FriendReque
     }
 
     @Override
-    public void onOptionClicked(User user, String result) {
+    public void onOptionClicked(User user, String result)
+    {
+        if(result.equals("0"))
+        {
+            DatabaseReference userFriendRef=FirebaseDatabase.getInstance().getReference().child(Constants.FIREBASE_PATH_USER_FRIENDS)
+                    .child(Constants.encodeEmail(mUserEmailString))
+                    .child(Constants.encodeEmail(user.getEmail()));
+            userFriendRef.setValue(user.getEmail());
+            mGetAllUserFriendRequestsReference.child(Constants.encodeEmail(user.getEmail()))
+                    .removeValue();
+            //server...
+            mCompositeSubscription.add(mLiveFriendsServices.approveDeclineFriendREquest(mSocket,mUserEmailString,user.getEmail(),"0"));
+        }
+        else {mGetAllUserFriendRequestsReference.child(Constants.encodeEmail(user.getEmail()))
+                .removeValue();
+            //server...
+            mCompositeSubscription.add(mLiveFriendsServices.approveDeclineFriendREquest(mSocket,mUserEmailString,user.getEmail(),"1"));
 
+
+        }
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mSocket.disconnect();
     }
 }
