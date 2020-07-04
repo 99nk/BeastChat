@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+   >
+    <EditText
+        android:id="@+id/fragment_find_friends_SearchBar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:paddingLeft="8dp"
+        android:layout_margin="5dp"
+        android:textColorHint="#000000"
+        android:drawablePadding="10dp"
+        android:drawableLeft="@drawable/ic_baseline_search_24"
+        android:background="@drawable/search_bar_background"
+        android:drawableStart="@drawable/ic_baseline_search_24"
+        android:hint="Find friend with email"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fragment_find_friends_RecyclerView"/>
+    <TextView
+        android:id="@+id/fragment_find_friends_noResults"
+        android:layout_width="wrap_content"
+        android:text="No User Found!"
+        android:gravity="center_horizontal"
+        android:textSize="22sp"
+        android:layout_marginTop="40dp"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        />
+
+</LinearLayout>

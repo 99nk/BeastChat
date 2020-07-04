@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp">
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        app:riv_border_width="2dip"
+        app:riv_corner_radius="30dip"
+        app:riv_border_color="#333333"
+        app:riv_oval="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/list_user_userPicture"
+        android:scaleType="centerCrop"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/list_user_userPicture"
+        android:text="Niharika"
+        android:layout_toEndOf="@id/list_user_userPicture"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:id="@+id/list_user_userName"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/list_user_userPicture"
+        android:text="Sent Friend Request"
+        android:visibility="gone"
+        android:layout_toEndOf="@id/list_user_userPicture"
+        android:id="@+id/list_user_userStatus"
+        android:layout_below="@id/list_user_userName"/>
+    <ImageView
+        android:layout_width="30dp"
+        android:src="@drawable/ic_baseline_person_add_24"
+        android:layout_height="30dp"
+        android:tint="#000000"
+        android:scaleType="center"
+        android:background="@drawable/friend_request_background"
+        android:id="@+id/list_user_addFriend"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="15dp"/>
+
+
+
+</RelativeLayout>
